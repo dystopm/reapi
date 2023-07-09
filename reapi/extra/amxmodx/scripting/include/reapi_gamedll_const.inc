@@ -4643,6 +4643,22 @@ enum CCSPlayer_Members
 	* Set params:       set_member(index, member, bool:value);
 	*/
 	m_bMegaBunnyJumping,
+
+	/*
+	* Description:      -
+	* Member type:      bool
+	* Get params:       get_member(index, member);
+	* Set params:       set_member(index, member, bool:value);
+	*/
+	m_bPlantC4Anywhere,
+
+	/*
+	* Description:      -
+	* Member type:      bool
+	* Get params:       get_member(index, member);
+	* Set params:       set_member(index, member, bool:value);
+	*/
+	m_bSpawnProtectionEffects,
 };
 
 /**
@@ -5937,7 +5953,7 @@ enum CKnife_Members
 	m_Knife_usKnife,
 
 	/*
-	* Description:      -
+	* Description:      Stab damage (default: 65.0)
 	* Member type:      float
 	* Get params:       get_member(index, member);
 	* Set params:       set_member(index, member, value);
@@ -5945,7 +5961,7 @@ enum CKnife_Members
 	m_Knife_flStabBaseDamage,
 
 	/*
-	* Description:      -
+	* Description:      Swing damage (default: 15.0)
 	* Member type:      float
 	* Get params:       get_member(index, member);
 	* Set params:       set_member(index, member, value);
@@ -5953,7 +5969,7 @@ enum CKnife_Members
 	m_Knife_flSwingBaseDamage,
 
 	/*
-	* Description:      -
+	* Description:      Fast Swing (first one) damage (default: 20.0)
 	* Member type:      float
 	* Get params:       get_member(index, member);
 	* Set params:       set_member(index, member, value);
@@ -5961,7 +5977,7 @@ enum CKnife_Members
 	m_Knife_flSwingBaseDamage_Fast,
 
 	/*
-	* Description:      -
+	* Description:      Stab distance (default: 32.0)
 	* Member type:      float
 	* Get params:       get_member(index, member);
 	* Set params:       set_member(index, member, value);
@@ -5969,12 +5985,20 @@ enum CKnife_Members
 	m_Knife_flStabDistance,
 
 	/*
-	* Description:      -
+	* Description:      Swing distance (default: 64.0)
 	* Member type:      float
 	* Get params:       get_member(index, member);
 	* Set params:       set_member(index, member, value);
 	*/
 	m_Knife_flSwingDistance,
+
+	/*
+	* Description:      Back Stab damage multiplier (default: 3.0)
+	* Member type:      float
+	* Get params:       get_member(index, member);
+	* Set params:       set_member(index, member, value);
+	*/
+	m_Knife_flBackStabMultiplier,
 };
 
 /**
