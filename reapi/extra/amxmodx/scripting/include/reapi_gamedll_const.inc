@@ -407,6 +407,14 @@ enum GamedllFunc
 	* Params:           (const weaponent, const owner, modelName[], Float:origin[3], Float:angles[3], Float:velocity[3], Float:lifeTime, bool:packAmmo)
 	*/
 	RG_CreateWeaponBox,
+
+	RG_ClearMultiDamage,
+	RG_AddMultiDamage,
+	RG_ApplyMultiDamage,
+	RG_PM_Jump,
+	RG_PM_Duck,
+	RG_PM_CheckWaterJump,
+	RG_PM_LadderMove,
 };
 
 /**
@@ -828,6 +836,8 @@ enum GamedllFunc_CBasePlayer
 	* Params:           (const this)
 	*/
 	RG_CBasePlayer_JoiningThink,
+
+	RG_CBasePlayer_EntSelectSpawnPoint,
 };
 
 /**
@@ -1075,6 +1085,10 @@ enum GamedllFunc_CSGameRules
 	* Params:           (const listener, const sender)
 	*/
 	RG_CSGameRules_CanPlayerHearPlayer,
+
+	RG_CSGameRules_TeamFull,
+	RG_CSGameRules_TeamStacked,
+	RG_CSGameRules_PlayerGotWeapon,
 };
 
 /**
