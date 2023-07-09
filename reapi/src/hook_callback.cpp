@@ -1489,7 +1489,7 @@ void ClearMultiDamage(IReGameHook_ClearMultiDamage *chain)
 		chain->callNext();
 	};
 
-	callVoidForward(RH_ClearMultiDamage, original);
+	callVoidForward(RG_ClearMultiDamage, original);
 }
 
 void AddMultiDamage(IReGameHook_AddMultiDamage *chain, entvars_t *pevInflictor, CBaseEntity *pEntity, float flDamage, int bitsDamageType)
