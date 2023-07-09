@@ -525,6 +525,50 @@ typedef IHookChainRegistryClass<void, class CBasePlayer> IReGameHookRegistry_CBa
 typedef IHookChain<void, class CGameRules **> IReGameHook_FreeGameRules;
 typedef IHookChainRegistry<void, class CGameRules **> IReGameHookRegistry_FreeGameRules;
 
+// CHalfLifeMultiplay::TeamFull hook
+typedef IHookChain<BOOL, int> IReGameHook_CSGameRules_TeamFull;
+typedef IHookChainRegistry<BOOL, int> IReGameHookRegistry_CSGameRules_TeamFull;
+
+// CHalfLifeMultiplay::TeamStacked hook
+typedef IHookChain<BOOL, int, int> IReGameHook_CSGameRules_TeamStacked;
+typedef IHookChainRegistry<BOOL, int, int> IReGameHookRegistry_CSGameRules_TeamStacked;
+
+// CHalfLifeMultiplay::PlayerGotWeapon hook
+typedef IHookChain<void, CBasePlayer *, CBasePlayerItem *> IReGameHook_CSGameRules_PlayerGotWeapon;
+typedef IHookChainRegistry<void, CBasePlayer *, CBasePlayerItem *> IReGameHookRegistry_CSGameRules_PlayerGotWeapon;
+
+// CBasePlayer::EntSelectSpawnPoint hook
+typedef IHookChainClass<edict_t *, CBasePlayer> IReGameHook_CBasePlayer_EntSelectSpawnPoint;
+typedef IHookChainRegistryClass<edict_t *, CBasePlayer> IReGameHookRegistry_CBasePlayer_EntSelectSpawnPoint;
+
+// ClearMultiDamage hook
+typedef IHookChain<void> IReGameHook_ClearMultiDamage;
+typedef IHookChainRegistry<void> IReGameHookRegistry_ClearMultiDamage;
+
+// AddMultiDamage hook
+typedef IHookChain<void, entvars_t *, CBaseEntity *, float, int> IReGameHook_AddMultiDamage;
+typedef IHookChainRegistry<void, entvars_t *, CBaseEntity *, float, int> IReGameHookRegistry_AddMultiDamage;
+
+// ApplyMultiDamage hook
+typedef IHookChain<void, entvars_t *, entvars_t *> IReGameHook_ApplyMultiDamage;
+typedef IHookChainRegistry<void, entvars_t *, entvars_t *> IReGameHookRegistry_ApplyMultiDamage;
+
+// PM_Jump hook
+typedef IHookChain<void, int> IReGameHook_PM_Jump;
+typedef IHookChainRegistry<void, int> IReGameHookRegistry_PM_Jump;
+
+// PM_Duck hook
+typedef IHookChain<void, int> IReGameHook_PM_Duck;
+typedef IHookChainRegistry<void, int> IReGameHookRegistry_PM_Duck;
+
+// PM_CheckWaterJump hook
+typedef IHookChain<void, int> IReGameHook_PM_CheckWaterJump;
+typedef IHookChainRegistry<void, int> IReGameHookRegistry_PM_CheckWaterJump;
+
+// PM_LadderMove hook
+typedef IHookChain<void, physent_t *, int> IReGameHook_PM_LadderMove;
+typedef IHookChainRegistry<void, physent_t *, int> IReGameHookRegistry_PM_LadderMove;
+
 class IReGameHookchains {
 public:
 	virtual ~IReGameHookchains() {}
@@ -660,6 +704,21 @@ public:
 	virtual IReGameHookRegistry_CBasePlayer_JoiningThink *CBasePlayer_JoiningThink() = 0;
 
 	virtual IReGameHookRegistry_FreeGameRules *FreeGameRules() = 0;
+
+	virtual IReGameHookRegistry_CSGameRules_TeamFull *CSGameRules_TeamFull() = 0;
+	virtual IReGameHookRegistry_CSGameRules_TeamStacked *CSGameRules_TeamStacked() = 0;
+	virtual IReGameHookRegistry_CSGameRules_PlayerGotWeapon *CSGameRules_PlayerGotWeapon() = 0;
+
+	virtual IReGameHookRegistry_CBasePlayer_EntSelectSpawnPoint *CBasePlayer_EntSelectSpawnPoint() = 0;
+
+	virtual IReGameHookRegistry_ClearMultiDamage *ClearMultiDamage() = 0;
+	virtual IReGameHookRegistry_AddMultiDamage *AddMultiDamage() = 0;
+	virtual IReGameHookRegistry_ApplyMultiDamage *ApplyMultiDamage() = 0;
+
+	virtual IReGameHookRegistry_PM_Jump *PM_Jump() = 0;
+	virtual IReGameHookRegistry_PM_Duck *PM_Duck() = 0;
+	virtual IReGameHookRegistry_PM_CheckWaterJump *PM_CheckWaterJump() = 0;
+	virtual IReGameHookRegistry_PM_LadderMove *PM_LadderMove() = 0;
 };
 
 struct ReGameFuncs_t {
@@ -680,6 +739,12 @@ struct ReGameFuncs_t {
 	void (*UTIL_RestartOther)(const char *szClassname);
 	void (*UTIL_ResetEntities)();
 	void (*UTIL_RemoveOther)(const char *szClassname, int nCount);
+	void (*UTIL_DecalTrace)(TraceResult *pTrace, int decalNumber);
+	void (*UTIL_Remove_api)(CBaseEntity *pEntity);
+	void (*AddAmmoNameToAmmoRegistry)(const char *szAmmoname);
+	class CWeaponBox *(*CreateWeaponBox)(CBasePlayerItem *pItem, CBasePlayer *pPlayerOwner, const char *modelName, Vector &origin, Vector &angles, Vector &velocity, float lifeTime, bool packAmmo);
+	class CGrenade *(*SpawnGrenade)(WeaponIdType weaponId, entvars_t *pevOwner, Vector &vecSrc, Vector &vecThrow, float time, int iTeam, unsigned short usEvent);
+	void (*TextureTypePlaySound)(TraceResult *ptr, Vector vecSrc, Vector vecEnd, int iBulletType);
 };
 
 class IReGameApi {

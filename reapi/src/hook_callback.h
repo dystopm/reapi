@@ -526,6 +526,21 @@ void CBasePlayer_JoiningThink(IReGameHook_CBasePlayer_JoiningThink *chain, CBase
 
 // TODO: pending FreeGameRules
 
+BOOL CSGameRules_TeamFull(IReGameHook_CSGameRules_TeamFull *chain, int team_id);
+BOOL CSGameRules_TeamStacked(IReGameHook_CSGameRules_TeamStacked *chain, int newTeam_id, int curTeam_id);
+void CSGameRules_PlayerGotWeapon(IReGameHook_CSGameRules_PlayerGotWeapon *chain, CBasePlayer *pPlayer, CBasePlayerItem *pWeapon);
+
+edict_t *CBasePlayer_EntSelectSpawnPoint(IReGameHook_CBasePlayer_EntSelectSpawnPoint *chain, CBasePlayer *pthis);
+
+void ClearMultiDamage(IReGameHook_ClearMultiDamage *chain);
+void AddMultiDamage(IReGameHook_AddMultiDamage *chain, entvars_t *pevInflictor, CBaseEntity *pEntity, float flDamage, int bitsDamageType);
+void ApplyMultiDamage(IReGameHook_ApplyMultiDamage *chain, entvars_t *pevInflictor, entvars_t *pevAttacker);
+
+void PM_Jump(IReGameHook_PM_Jump *chain, int playerIndex);
+void PM_Duck(IReGameHook_PM_Duck *chain, int playerIndex);
+void PM_CheckWaterJump(IReGameHook_PM_CheckWaterJump *chain, int playerIndex);
+void PM_LadderMove(IReGameHook_PM_LadderMove *chain, physent_t *pLadder, int playerIndex);
+
 /*
 * VTC functions
 */

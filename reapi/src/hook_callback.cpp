@@ -1442,6 +1442,116 @@ void CBasePlayer_JoiningThink(IReGameHook_CBasePlayer_JoiningThink *chain, CBase
 	callVoidForward(RG_CBasePlayer_JoiningThink, original, indexOfEdict(pthis->pev));
 }
 
+BOOL CSGameRules_TeamFull(IReGameHook_CSGameRules_TeamFull *chain, int team_id)
+{
+	auto original = [chain](int _team_id)
+	{
+		return chain->callNext(_team_id);
+	};
+
+	return callForward<BOOL>(RG_CSGameRules_TeamFull, original, team_id);
+}
+
+BOOL CSGameRules_TeamStacked(IReGameHook_CSGameRules_TeamStacked *chain, int newTeam_id, int curTeam_id)
+{
+	auto original = [chain](int _newTeam_id, int _curTeam_id)
+	{
+		return chain->callNext(_newTeam_id, _curTeam_id);
+	};
+
+	return callForward<BOOL>(RG_CSGameRules_TeamStacked, original, newTeam_id, curTeam_id);
+}
+
+void CSGameRules_PlayerGotWeapon(IReGameHook_CSGameRules_PlayerGotWeapon *chain, CBasePlayer *pPlayer, CBasePlayerItem *pWeapon)
+{
+	auto original = [chain](int _pPlayer, int _pWeapon)
+	{
+		chain->callNext(getPrivate<CBasePlayer>(_pPlayer), getPrivate<CBasePlayerItem>(_pWeapon));
+	};
+
+	callVoidForward(RG_CSGameRules_PlayerGotWeapon, original, indexOfEdict(pPlayer->pev), indexOfEdict(pWeapon->pev));
+}
+
+edict_t *CBasePlayer_EntSelectSpawnPoint(IReGameHook_CBasePlayer_EntSelectSpawnPoint *chain, CBasePlayer *pthis)
+{
+	auto original = [chain](int _pthis)
+	{
+		return indexOfEdict(chain->callNext(getPrivate<CBasePlayer>(_pthis)));
+	};
+
+	return edictByIndexAmx(callForward<size_t>(RG_CBasePlayer_EntSelectSpawnPoint, original, indexOfEdict(pthis->pev)));
+}
+
+void ClearMultiDamage(IReGameHook_ClearMultiDamage *chain)
+{
+	auto original = [chain]()
+	{
+		chain->callNext();
+	};
+
+	callVoidForward(RH_ClearMultiDamage, original);
+}
+
+void AddMultiDamage(IReGameHook_AddMultiDamage *chain, entvars_t *pevInflictor, CBaseEntity *pEntity, float flDamage, int bitsDamageType)
+{
+	auto original = [chain](int _pevInflictor, int _pEntity, float _flDamage, int _bitsDamageType)
+	{
+		chain->callNext(PEV(_pevInflictor), getPrivate<CBaseEntity>(_pEntity), _flDamage, _bitsDamageType);
+	};
+
+	callVoidForward(RG_AddMultiDamage, original, indexOfEdict(pevInflictor), indexOfEdict(pEntity->pev), flDamage, bitsDamageType);
+}
+
+void ApplyMultiDamage(IReGameHook_ApplyMultiDamage *chain, entvars_t *pevInflictor, entvars_t *pevAttacker)
+{
+	auto original = [chain](int _pevInflictor, int _pevAttacker)
+	{
+		chain->callNext(PEV(_pevInflictor), PEV(_pevAttacker));
+	};
+
+	callVoidForward(RG_ApplyMultiDamage, original, indexOfEdict(pevInflictor), indexOfEdict(pevAttacker));
+}
+
+void PM_Jump(IReGameHook_PM_Jump *chain, int playerIndex)
+{
+	auto original = [chain](int _playerIndex)
+	{
+		chain->callNext(_playerIndex);
+	};
+
+	callVoidForward(RG_PM_Jump, original, playerIndex);
+}
+
+void PM_Duck(IReGameHook_PM_Duck *chain, int playerIndex)
+{
+	auto original = [chain](int _playerIndex)
+	{
+		chain->callNext(_playerIndex);
+	};
+
+	callVoidForward(RG_PM_Duck, original, playerIndex);
+}
+
+void PM_CheckWaterJump(IReGameHook_PM_CheckWaterJump *chain, int playerIndex)
+{
+	auto original = [chain](int _playerIndex)
+	{
+		chain->callNext(_playerIndex);
+	};
+
+	callVoidForward(RG_PM_CheckWaterJump, original, playerIndex);
+}
+
+void PM_LadderMove(IReGameHook_PM_LadderMove *chain, physent_t *pLadder, int playerIndex)
+{
+	auto original = [chain](physent_t *_pLadder, int _playerIndex)
+	{
+		chain->callNext(_pLadder, _playerIndex);
+	};
+
+	callVoidForward(RG_PM_LadderMove, original, pLadder, playerIndex);
+}
+
 /*
 * VTC functions
 */

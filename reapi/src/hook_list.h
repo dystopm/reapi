@@ -146,6 +146,14 @@ enum GamedllFunc
 
 	RG_CreateWeaponBox,
 
+	RG_ClearMultiDamage,
+	RG_AddMultiDamage,
+	RG_ApplyMultiDamage,
+	RG_PM_Jump,
+	RG_PM_Duck,
+	RG_PM_CheckWaterJump,
+	RG_PM_LadderMove,
+
 	// [...]
 };
 
@@ -218,6 +226,8 @@ enum GamedllFunc_CBasePlayer
 	RG_CBasePlayer_DeathSound,
 	RG_CBasePlayer_JoiningThink,
 
+	RG_CBasePlayer_EntSelectSpawnPoint,
+
 	// [...]
 };
 
@@ -277,6 +287,10 @@ enum GamedllFunc_CSGameRules
 	RG_CSGameRules_BalanceTeams,
 	RG_CSGameRules_OnRoundFreezeEnd,
 	RG_CSGameRules_CanPlayerHearPlayer,
+
+	RG_CSGameRules_TeamFull,
+	RG_CSGameRules_TeamStacked,
+	RG_CSGameRules_PlayerGotWeapon,
 
 	// [...]
 };
