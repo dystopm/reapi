@@ -1506,7 +1506,7 @@ void ApplyMultiDamage(IReGameHook_ApplyMultiDamage *chain, entvars_t *pevInflict
 {
 	auto original = [chain](int _pevInflictor, int _pevAttacker)
 	{
-		chain->callNext(PEV(_pevInflictor), PEV(_pevInf_pevAttackerlictor));
+		chain->callNext(PEV(_pevInflictor), PEV(_pevAttacker));
 	};
 
 	callVoidForward(RG_ApplyMultiDamage, original, indexOfEdict(pevInflictor), indexOfEdict(pevAttacker));
