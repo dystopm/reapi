@@ -131,6 +131,13 @@ hook_t hooklist_gamedll[] = {
 	DLL(SpawnHeadGib),
 	DLL(SpawnRandomGibs),
 	DLL(CreateWeaponBox),
+	DLL(ClearMultiDamage),
+	DLL(AddMultiDamage),
+	DLL(ApplyMultiDamage),
+	DLL(PM_Jump),
+	DLL(PM_Duck),
+	DLL(PM_CheckWaterJump),
+	DLL(PM_LadderMove),
 };
 
 hook_t hooklist_animating[] = {
@@ -195,6 +202,7 @@ hook_t hooklist_player[] = {
 	DLL(CBasePlayer_Pain),
 	DLL(CBasePlayer_DeathSound),
 	DLL(CBasePlayer_JoiningThink),
+	DLL(CBasePlayer_EntSelectSpawnPoint),
 };
 
 hook_t hooklist_gamerules[] = {
@@ -222,6 +230,9 @@ hook_t hooklist_gamerules[] = {
 	DLL(CSGameRules_BalanceTeams),
 	DLL(CSGameRules_OnRoundFreezeEnd),
 	DLL(CSGameRules_CanPlayerHearPlayer),
+	DLL(CSGameRules_TeamFull),
+	DLL(CSGameRules_TeamStacked),
+	DLL(CSGameRules_PlayerGotWeapon),
 };
 
 hook_t hooklist_grenade[] = {
