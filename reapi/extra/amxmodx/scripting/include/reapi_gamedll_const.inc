@@ -4680,6 +4680,11 @@ enum CCSPlayer_Members
 	* Set params:       set_member(index, member, bool:value);
 	*/
 	m_bSpawnProtectionEffects,
+
+	m_flJumpHeight,
+	m_flLongJumpHeight,
+	m_flLongJumpForce,
+	m_flDuckSpeedMultiplier,
 };
 
 /**
@@ -6116,6 +6121,8 @@ enum CCSPlayerWeapon_Members
 	* Set params:       set_member(index, member, Float:value);
 	*/
 	m_Weapon_flBaseDamage,
+
+	m_Weapon_bBlockSecondaryAttack,
 };
 
 /**

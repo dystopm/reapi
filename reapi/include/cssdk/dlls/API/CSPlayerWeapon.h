@@ -33,15 +33,22 @@ class CCSPlayerWeapon: public CCSPlayerItem
 {
 public:
 	CCSPlayerWeapon() :
-		m_bHasSecondaryAttack(false)
+		m_bHasSecondaryAttack(false),
+		m_bBlockSecondaryAttack(false)
 	{
 	}
+
+	virtual BOOL DefaultDeploy(char *szViewModel, char *szWeaponModel, int iAnim, char *szAnimExt, int skiplocal = 0) = 0;
+	virtual int DefaultReload(int iClipSize, int iAnim, float fDelay) = 0;
+	virtual bool DefaultShotgunReload(int iAnim, int iStartAnim, float fDelay, float fStartDelay, const char *pszReloadSound1 = nullptr, const char *pszReloadSound2 = nullptr) = 0;
+	virtual void KickBack(float up_base, float lateral_base, float up_modifier, float lateral_modifier, float up_max, float lateral_max, int direction_change) = 0;
 
 	CBasePlayerWeapon *BasePlayerWeapon() const;
 
 public:
 	bool m_bHasSecondaryAttack;
 	float m_flBaseDamage;
+	bool m_bBlockSecondaryAttack;
 };
 
 // Inlines

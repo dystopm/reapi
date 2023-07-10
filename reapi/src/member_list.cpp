@@ -762,6 +762,10 @@ member_t memberlist_csplayer[] = {
 	CSPL_MEMBERS(m_bMegaBunnyJumping),
 	CSPL_MEMBERS(m_bPlantC4Anywhere),
 	CSPL_MEMBERS(m_bSpawnProtectionEffects),
+	CSPL_MEMBERS(m_flJumpHeight),
+	CSPL_MEMBERS(m_flLongJumpHeight), 
+	CSPL_MEMBERS(m_flLongJumpForce),
+	CSPL_MEMBERS(m_flDuckSpeedMultiplier),
 };
 
 member_t memberlist_baseitem[] = {
@@ -1039,6 +1043,7 @@ member_t memberlist_mapinfo[] = {
 member_t memberlist_csplayerweapon[] = {
 	CSPLWPN_MEMBERS(bHasSecondaryAttack),
 	CSPLWPN_MEMBERS(flBaseDamage),
+	CSPLWPN_MEMBERS(bBlockSecondaryAttack),
 };
 
 member_t memberlist_gib[] = {

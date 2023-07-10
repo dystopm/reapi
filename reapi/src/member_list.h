@@ -751,6 +751,10 @@ enum CSPlayer_Members
 	m_bMegaBunnyJumping,
 	m_bPlantC4Anywhere,
 	m_bSpawnProtectionEffects,
+	m_flJumpHeight,
+	m_flLongJumpHeight,
+	m_flLongJumpForce,
+	m_flDuckSpeedMultiplier,
 };
 
 enum CBasePlayerItem_Members
@@ -1065,6 +1069,7 @@ enum CSPlayerWeapon_Members
 {
 	m_Weapon_bHasSecondaryAttack = BEGIN_MEMBER_REGION(csplayerweapon),
 	m_Weapon_flBaseDamage,
+	m_Weapon_bBlockSecondaryAttack,
 };
 
 enum CGib_Members
