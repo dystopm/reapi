@@ -740,7 +740,7 @@ struct ReGameFuncs_t {
 	void (*UTIL_ResetEntities)();
 	void (*UTIL_RemoveOther)(const char *szClassname, int nCount);
 	void (*UTIL_DecalTrace)(TraceResult *pTrace, int decalNumber);
-	void (*UTIL_Remove_api)(CBaseEntity *pEntity);
+	void (*UTIL_Remove)(CBaseEntity *pEntity);
 	void (*AddAmmoNameToAmmoRegistry)(const char *szAmmoname);
 	class CWeaponBox *(*CreateWeaponBox)(CBasePlayerItem *pItem, CBasePlayer *pPlayerOwner, const char *modelName, Vector &origin, Vector &angles, Vector &velocity, float lifeTime, bool packAmmo);
 	class CGrenade *(*SpawnGrenade)(WeaponIdType weaponId, entvars_t *pevOwner, Vector &vecSrc, Vector &vecThrow, float time, int iTeam, unsigned short usEvent);
