@@ -4672,6 +4672,38 @@ enum CCSPlayer_Members
 	* Set params:       set_member(index, member, bool:value);
 	*/
 	m_bSpawnProtectionEffects,
+
+	/*
+	* Description:      Player vertical jump height
+	* Member type:      float
+	* Get params:       Float:get_member(index, member);
+	* Set params:       set_member(index, member, Float:value);
+	*/
+	m_flJumpHeight,
+
+	/*
+	* Description:      Player vertical jump height with longjump
+	* Member type:      float
+	* Get params:       Float:get_member(index, member);
+	* Set params:       set_member(index, member, Float:value);
+	*/
+	m_flLongJumpHeight,	
+
+	/*
+	* Description:      Player horizontal jump height with longjump
+	* Member type:      float
+	* Get params:       Float:get_member(index, member);
+	* Set params:       set_member(index, member, Float:value);
+	*/
+	m_flLongJumpForce,	
+
+	/*
+	* Description:      Player crouch maxspeed multiplier
+	* Member type:      float
+	* Get params:       Float:get_member(index, member);
+	* Set params:       set_member(index, member, Float:value);
+	*/
+	m_flDuckSpeedMultiplier,
 };
 
 /**
