@@ -1038,7 +1038,7 @@ member_t memberlist_mapinfo[] = {
 };
 
 member_t memberlist_csplayerweapon[] = {
-	CSPLWPN_MEMBERS(iStateSecondaryAtkState),
+	CSPLWPN_MEMBERS(iStateSecondaryAttack),
 	CSPLWPN_MEMBERS(flBaseDamage),
 };
 
