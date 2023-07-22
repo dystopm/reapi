@@ -111,6 +111,7 @@ inline MType getMemberType(MONSTERSTATE)        { return MEMBER_INTEGER; }
 inline MType getMemberType(ArmorType)           { return MEMBER_INTEGER; }
 inline MType getMemberType(ArmouryItemPack)     { return MEMBER_INTEGER; }
 inline MType getMemberType(InfoMapBuyParam)     { return MEMBER_INTEGER; }
+inline MType getMemberType(SecondaryAtkState)   { return MEMBER_INTEGER; }
 
 inline MType getMemberType(TraceResult)         { return MEMBER_TRACERESULT; }
 
@@ -1037,7 +1038,7 @@ member_t memberlist_mapinfo[] = {
 };
 
 member_t memberlist_csplayerweapon[] = {
-	CSPLWPN_MEMBERS(bHasSecondaryAttack),
+	CSPLWPN_MEMBERS(iStateSecondaryAttack),
 	CSPLWPN_MEMBERS(flBaseDamage),
 };
 

@@ -1063,7 +1063,7 @@ enum MapInfo_Members
 
 enum CSPlayerWeapon_Members
 {
-	m_Weapon_bHasSecondaryAttack = BEGIN_MEMBER_REGION(csplayerweapon),
+	m_Weapon_iStateSecondaryAttack = BEGIN_MEMBER_REGION(csplayerweapon),
 	m_Weapon_flBaseDamage,
 };
 
