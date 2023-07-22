@@ -1368,3 +1368,14 @@ enum InfoMapBuyParam
 #define SCORE_STATUS_BOMB                 (1<<1)
 #define SCORE_STATUS_VIP                  (1<<2)
 #define SCORE_STATUS_DEFKIT               (1<<3)
+
+/**
+* Weapon secondary attack states
+* For CCSPlayerWeapon::m_iStateSecondaryAttack
+*/
+enum SecondaryAtkState
+{
+	WEAPON_SECONDARY_ATTACK_NONE = 0,
+	WEAPON_SECONDARY_ATTACK_SET,
+	WEAPON_SECONDARY_ATTACK_BLOCK
+};
