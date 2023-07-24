@@ -2604,6 +2604,214 @@ cell AMX_NATIVE_CALL rg_spawn_random_gibs(AMX* amx, cell* params)
 	return TRUE;
 }
 
+cell AMX_NATIVE_CALL rg_spawn_grenade(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_weapon_id, arg_index, arg_origin, arg_velocity, arg_time, arg_team, arg_event };
+
+	CHECK_ISPLAYER(arg_index);
+
+	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
+	CHECK_CONNECTED(pPlayer, arg_index);
+
+	CAmxArgs args(amx, params);
+
+	CGrenade *pBomb = g_ReGameFuncs->SpawnGrenade(args[arg_weapon_id],
+						pPlayer->pev, 
+						args[arg_origin], 
+						args[arg_velocity], 
+						args[arg_time], 
+						args[arg_team], 
+						args[arg_event]);
+
+	// Sanity check anyway
+	if (pBomb)
+		return indexOfPDataAmx(pBomb);
+
+	return AMX_NULLENT;
+}
+
+cell AMX_NATIVE_CALL rg_create_weaponbox(AMX* amx, cell* params)
+{
+	enum args_e { arg_item, arg_player, arg_modelname, arg_origin, arg_angles, arg_velocity, arg_lifetime, arg_packammo };
+
+	CHECK_ISENTITY(arg_item);
+	
+	CBasePlayerItem *pItem = getPrivate<CBasePlayerItem>(params[arg_item]);
+	if (unlikely(pItem == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	CHECK_ISPLAYER(arg_player);
+
+	CBasePlayer *pPlayer = getPrivate<CBasePlayer>(params[arg_player]);
+	CHECK_CONNECTED(pPlayer, arg_player);
+
+	CAmxArgs args(amx, params);
+	
+	char modelStr[128];
+	auto modelName = getAmxString(amx, args[arg_modelname], modelStr);
+	
+	CWeaponBox *pBox = g_ReGameFuncs->CreateWeaponBox(pItem, pPlayer, modelName, args[arg_origin], args[arg_angles], args[arg_velocity], args[arg_lifetime], args[arg_packammo]);
+	
+	if (pBox)
+		return indexOfPDataAmx(pBox);
+
+	return AMX_NULLENT;
+}
+
+cell AMX_NATIVE_CALL rg_remove_entity(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_entity };
+
+	CHECK_ISENTITY(arg_entity);
+
+	auto pEntity = getPrivate<CBaseEntity>(params[arg_entity]);
+	if (!pEntity || (pEntity->pev->flags & FL_KILLME) != 0) {
+		return FALSE;
+	}
+
+	g_ReGameFuncs->UTIL_Remove(pEntity);
+
+	if ((pEntity->pev->flags & FL_KILLME) != 0) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+cell AMX_NATIVE_CALL rg_decal_trace(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_trace, arg_decal };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_emit_texture_sound(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_trace, arg_start, arg_end, arg_bullet_type };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_add_ammo_registry(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ammoname };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_weapon_deploy(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_weapon_reload(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_weapon_shotgun_reload(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_switch_best_weapon(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_index, arg_weapon };
+
+	CHECK_GAMERULES();
+
+	CHECK_ISPLAYER(arg_index);
+
+	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
+	CHECK_CONNECTED(pPlayer, arg_index);
+
+	if(!pPlayer->IsAlive())
+		return FALSE;
+
+	CBasePlayerWeapon *pWeapon;
+
+	if(params[arg_weapon] != 0)
+	{
+		CHECK_ISENTITY(arg_weapon);
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+
+		if (unlikely(pWeapon == nullptr)) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+			return FALSE;
+		}
+
+		if (!pWeapon->IsWeapon()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+			return FALSE;
+		}
+	}
+	else
+	{
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+
+		if (unlikely(pWeapon == nullptr)) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d has invalid m_pActiveItem", __FUNCTION__, params[arg_index]);
+			return FALSE;
+		}
+	}
+
+	return CSGameRules()->GetNextBestWeapon(pPlayer, pWeapon);;
+}
+
+cell AMX_NATIVE_CALL rg_disappear(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_index };
+
+	CHECK_ISPLAYER(params[arg_index])
+
+	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
+	CHECK_CONNECTED(pPlayer, arg_index);
+
+	pPlayer->CSPlayer()->Disappear();
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_get_bodygroup(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_set_bodygroup(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_ };
+
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_death_notice(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_victim, arg_killer, arg_inflictor };
+
+	CHECK_GAMERULES();
+
+	CHECK_ISPLAYER(params[arg_victim])
+
+	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_victim]);
+	CHECK_CONNECTED(pPlayer, arg_victim);
+
+	CHECK_ISENTITY(params[arg_killer])
+
+	CAmxArgs args(amx, params);
+	CSGameRules()->DeathNotice(pPlayer, args[arg_killer], args[arg_inflictor]);
+	return TRUE;
+}
+
 AMX_NATIVE_INFO Misc_Natives_RG[] =
 {
 	{ "rg_set_animation",             rg_set_animation             },
@@ -2699,6 +2907,21 @@ AMX_NATIVE_INFO Misc_Natives_RG[] =
 
 	{ "rg_spawn_head_gib",            rg_spawn_head_gib            },
 	{ "rg_spawn_random_gibs",         rg_spawn_random_gibs         },
+	
+	{ "rg_spawn_grenade",             rg_spawn_grenade             },
+	{ "rg_create_weaponbox",          rg_create_weaponbox          },
+	{ "rg_remove_entity",             rg_remove_entity             },
+	{ "rg_decal_trace",               rg_decal_trace               },
+	{ "rg_emit_texture_sound",        rg_emit_texture_sound        },
+	{ "rg_add_ammo_registry",         rg_add_ammo_registry         },
+	{ "rg_weapon_deploy",             rg_weapon_deploy             },
+	{ "rg_weapon_reload",             rg_weapon_reload             },
+	{ "rg_weapon_shotgun_reload",     rg_weapon_shotgun_reload     },
+	{ "rg_switch_best_weapon",        rg_switch_best_weapon        },
+	{ "rg_disappear",                 rg_disappear                 },
+	{ "rg_get_bodygroup",             rg_get_bodygroup             },
+	{ "rg_set_bodygroup",             rg_set_bodygroup             },
+	{ "rg_death_notice",              rg_death_notice              },
 
 	{ nullptr, nullptr }
 };
