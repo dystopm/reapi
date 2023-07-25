@@ -2649,9 +2649,8 @@ cell AMX_NATIVE_CALL rg_create_weaponbox(AMX* amx, cell* params)
 
 	CAmxArgs args(amx, params);
 	
-	char modelStr[128];
-	auto modelName = getAmxString(amx, args[arg_modelname], modelStr);
-	
+	char modelStr[MAX_PATH];
+	const char *modelName = getAmxString(amx, params[arg_modelname], modelStr);
 	CWeaponBox *pBox = g_ReGameFuncs->CreateWeaponBox(pItem, pPlayer, modelName, args[arg_origin], args[arg_angles], args[arg_velocity], args[arg_lifetime], args[arg_packammo]);
 	
 	if (pBox)
@@ -2684,6 +2683,8 @@ cell AMX_NATIVE_CALL rg_decal_trace(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_trace, arg_decal };
 
+	CAmxArgs args(amx, params);
+	g_ReGameFuncs->UTIL_DecalTrace(args[arg_trace], args[arg_decal]);
 	return TRUE;
 }
 
@@ -2691,6 +2692,8 @@ cell AMX_NATIVE_CALL rg_emit_texture_sound(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_trace, arg_start, arg_end, arg_bullet_type };
 
+	CAmxArgs args(amx, params);
+	g_ReGameFuncs->TextureTypePlaySound(args[arg_trace], args[arg_start], args[arg_end], args[arg_bullet_type]);
 	return TRUE;
 }
 
@@ -2698,6 +2701,15 @@ cell AMX_NATIVE_CALL rg_add_ammo_registry(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_ammoname };
 
+	char ammonamebuf[190];
+	const char *ammoname  = getAmxString(amx, params[arg_ammoname], ammonamebuf);
+
+	if (!ammoname || ammoname[0] == '\0') {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: empty ammo name", __FUNCTION__);
+		return FALSE;
+	}
+	
+	g_ReGameFuncs->AddAmmoNameToAmmoRegistry(ammoname);
 	return TRUE;
 }
 

@@ -86,6 +86,10 @@ public:
 	{
 		return static_cast<WeaponIdType>(m_value);
 	}
+	operator TraceResult *() const
+	{
+		return reinterpret_cast<TraceResult *>(m_value);
+	}
 	Vector& vector() const
 	{
 		return operator Vector&();
