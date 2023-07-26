@@ -2713,26 +2713,173 @@ cell AMX_NATIVE_CALL rg_add_ammo_registry(AMX* amx, cell* params)
 	return TRUE;
 }
 
+/*
+	virtual BOOL DefaultDeploy(char *szViewModel, char *szWeaponModel, int iAnim, char *szAnimExt, int skiplocal = 0) = 0;
+	virtual int DefaultReload(int iClipSize, int iAnim, float fDelay) = 0;
+
+*/
+
 cell AMX_NATIVE_CALL rg_weapon_deploy(AMX* amx, cell* params)
 {
-	enum args_e { arg_count, arg_ };
+	enum args_e { arg_count, arg_weapon, arg_viewmodel, arg_weaponmodel, arg_anim, arg_animextension, arg_skiplocal };
+	
+	CBasePlayerWeapon *pWeapon;
+	
+	if (params[arg_weapon] > 0 && params[arg_weapon] <= gpGlobals->maxClients)
+	{
+		CHECK_ISPLAYER(arg_weapon);
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_weapon]);
+		CHECK_CONNECTED(pPlayer, arg_weapon);
 
-	return TRUE;
+		if(!pPlayer->IsAlive()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d not alive", __FUNCTION__, params[arg_weapon]);
+			return FALSE;
+		}
+
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+	}
+	else
+	{
+		CHECK_ISENTITY(arg_weapon);	
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+	}
+	
+	if (unlikely(pWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (!pWeapon->IsWeapon()) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+		return FALSE;
+	}
+	
+	CCSPlayerWeapon *pCSWeapon = pWeapon->CSPlayerWeapon();
+	if (unlikely(pCSWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized m_pEntity.", __FUNCTION__);
+		return FALSE;
+	}
+
+	char viewmodelbuffer[MAX_PATH], weaponmodelbuffer[MAX_PATH], animextbuffer[32];
+
+	return pCSWeapon->DefaultDeploy(getAmxString(getAmxAddr(amx, params[arg_viewmodel]), viewmodelbuffer, sizeof (viewmodelbuffer) - 1, nullptr), 
+		getAmxString(getAmxAddr(amx, params[arg_weaponmodel]), weaponmodelbuffer, sizeof (weaponmodelbuffer) - 1, nullptr), 
+		(int)params[arg_anim], 
+		getAmxString(getAmxAddr(amx, params[arg_animextension]), animextbuffer, sizeof (animextbuffer) - 1, nullptr), 
+		(int)params[arg_skiplocal]) ?
+			TRUE :
+			FALSE ;
 }
 
 cell AMX_NATIVE_CALL rg_weapon_reload(AMX* amx, cell* params)
 {
-	enum args_e { arg_count, arg_ };
+	enum args_e { arg_count, arg_weapon, arg_clipsize, arg_anim, arg_delay };
+	
+	CBasePlayerWeapon *pWeapon;
+	
+	if (params[arg_weapon] > 0 && params[arg_weapon] <= gpGlobals->maxClients)
+	{
+		CHECK_ISPLAYER(arg_weapon);
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_weapon]);
+		CHECK_CONNECTED(pPlayer, arg_weapon);
 
-	return TRUE;
+		if(!pPlayer->IsAlive()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d not alive", __FUNCTION__, params[arg_weapon]);
+			return FALSE;
+		}
+
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+	}
+	else
+	{
+		CHECK_ISENTITY(arg_weapon);	
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+	}
+	
+	if (unlikely(pWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (!pWeapon->IsWeapon()) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+		return FALSE;
+	}
+	
+	CCSPlayerWeapon *pCSWeapon = pWeapon->CSPlayerWeapon();
+	if (unlikely(pCSWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized m_pEntity.", __FUNCTION__);
+		return FALSE;
+	}
+	
+	CAmxArgs args(amx, params);
+	
+	int clipsize = args[arg_clipsize];
+	
+	if (clipsize <= 0)
+		clipsize = pWeapon->CSPlayerItem()->m_ItemInfo.iMaxClip;
+	
+	return pCSWeapon->DefaultReload(clipsize, args[arg_anim], args[arg_delay]) ? TRUE : FALSE;
 }
 
 cell AMX_NATIVE_CALL rg_weapon_shotgun_reload(AMX* amx, cell* params)
 {
-	enum args_e { arg_count, arg_ };
+	enum args_e { arg_count, arg_weapon, arg_anim, arg_startanim, arg_delay, arg_startdelay, arg_reloadsound1, arg_reloadsound2 };
+	
+	CBasePlayerWeapon *pWeapon;
+	
+	if (params[arg_weapon] > 0 && params[arg_weapon] <= gpGlobals->maxClients)
+	{
+		CHECK_ISPLAYER(arg_weapon);
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_weapon]);
+		CHECK_CONNECTED(pPlayer, arg_weapon);
 
-	return TRUE;
+		if(!pPlayer->IsAlive()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d not alive", __FUNCTION__, params[arg_weapon]);
+			return FALSE;
+		}
+
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+	}
+	else
+	{
+		CHECK_ISENTITY(arg_weapon);	
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+	}
+	
+	if (unlikely(pWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (!pWeapon->IsWeapon()) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+		return FALSE;
+	}
+	
+	CCSPlayerWeapon *pCSWeapon = pWeapon->CSPlayerWeapon();
+	if (unlikely(pCSWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized m_pEntity.", __FUNCTION__);
+		return FALSE;
+	}
+	
+	CAmxArgs args(amx, params);
+	
+	char sound1buffer[MAX_PATH], sound2buffer[MAX_PATH];
+	const char *reloadsound1 = getAmxString(amx, params[arg_reloadsound1], sound1buffer);
+	const char *reloadsound2 = getAmxString(amx, params[arg_reloadsound2], sound2buffer);
+		
+	return pCSWeapon->DefaultShotgunReload(args[arg_anim], args[arg_startanim], args[arg_delay], args[arg_startdelay], reloadsound1, reloadsound2) ? TRUE : FALSE;
 }
+
+/*
+	virtual bool DefaultShotgunReload(int iAnim, int iStartAnim, float fDelay, float fStartDelay, const char *pszReloadSound1 = nullptr, const char *pszReloadSound2 = nullptr) = 0;
+	virtual void KickBack(float up_base, float lateral_base, float up_modifier, float lateral_modifier, float up_max, float lateral_max, int direction_change) = 0;
+	virtual void SendWeaponAnim(int iAnim, int skiplocal = 0) = 0;
+*/
 
 cell AMX_NATIVE_CALL rg_switch_best_weapon(AMX* amx, cell* params)
 {
