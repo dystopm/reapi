@@ -221,6 +221,48 @@ void GetAttachment(CBaseEntity *pEntity, int iAttachment, Vector *pVecOrigin, Ve
 	}
 }
 
+void SetBodygroup(CBaseEntity *pEntity, int iGroup, int iValue)
+{
+	studiohdr_t *pstudiohdr = static_cast<studiohdr_t *>(GET_MODEL_PTR(pEntity->edict()));
+	if (!pstudiohdr)
+	{
+		return;
+	}
+
+	if (iGroup > pstudiohdr->numbodyparts)
+	{
+		return;
+	}
+
+	mstudiobodyparts_t *pbodypart = (mstudiobodyparts_t *)((byte *)pstudiohdr + pstudiohdr->bodypartindex) + iGroup;
+
+	if (iValue >= pbodypart->nummodels)
+	{
+		return;
+	}
+
+	int iCurrent = (pEntity->pev->body / pbodypart->base) % pbodypart->nummodels;
+	pEntity->pev->body += (iValue - iCurrent) * pbodypart->base;
+}
+
+int GetBodygroup(CBaseEntity *pEntity, int iGroup)
+{
+	studiohdr_t *pstudiohdr = static_cast<studiohdr_t *>(GET_MODEL_PTR(pEntity->edict()));
+
+	if (!pstudiohdr || iGroup > pstudiohdr->numbodyparts)
+	{
+		return 0;
+	}
+
+	mstudiobodyparts_t *pbodypart = (mstudiobodyparts_t *)((byte *)pstudiohdr + pstudiohdr->bodypartindex) + iGroup;
+
+	if (pbodypart->nummodels <= 1)
+		return 0;
+
+	int iCurrent = (pEntity->pev->body / pbodypart->base) % pbodypart->nummodels;
+	return iCurrent;
+}
+
 void RemoveOrDropItem(CBasePlayer *pPlayer, CBasePlayerItem *pItem, GiveType type)
 {
 	switch (type)

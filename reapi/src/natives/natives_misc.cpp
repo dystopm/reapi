@@ -3078,8 +3078,6 @@ AMX_NATIVE_INFO Misc_Natives_RG[] =
 	{ "rg_weapon_shotgun_reload",     rg_weapon_shotgun_reload     },
 	{ "rg_switch_best_weapon",        rg_switch_best_weapon        },
 	{ "rg_disappear",                 rg_disappear                 },
-	{ "rg_get_bodygroup",             rg_get_bodygroup             },
-	{ "rg_set_bodygroup",             rg_set_bodygroup             },
 	{ "rg_death_notice",              rg_death_notice              },
 
 	{ nullptr, nullptr }

@@ -257,6 +257,48 @@ cell AMX_NATIVE_CALL amx_GetAttachment(AMX *amx, cell *params)
 	return TRUE;
 }
 
+cell AMX_NATIVE_CALL amx_GetBodygroup(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_group };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return 0;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return 0;
+	}
+
+	return (cell)GetBodygroup(pEntity, params[arg_group]);
+}
+
+
+cell AMX_NATIVE_CALL amx_SetBodygroup(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_group, arg_value };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return FALSE;
+	}
+
+	SetBodygroup(pEntity, params[arg_group], params[arg_value]);
+	return TRUE;
+}
+
 /*
 * Sets Think callback for entity
 *
@@ -480,19 +522,21 @@ cell AMX_NATIVE_CALL amx_SetMoveDone(AMX *amx, cell *params)
 
 AMX_NATIVE_INFO Natives_Common[] =
 {
-	{ "FClassnameIs",    amx_FClassnameIs    },
-	{ "GetGrenadeType",  amx_GetGrenadeType  },
-	{ "engset_view",     amx_engset_view     },
-	{ "get_viewent",     amx_get_viewent     },
-	{ "get_key_value",   amx_get_key_value   },
-	{ "set_key_value",   amx_set_key_value   },
-	{ "GetBonePosition", amx_GetBonePosition },
-	{ "GetAttachment",   amx_GetAttachment   },
-	{ "SetThink",        amx_SetThink        },
-	{ "SetTouch",        amx_SetTouch        },
-	{ "SetUse",          amx_SetUse          },
-	{ "SetBlocked",      amx_SetBlocked      },
-	{ "SetMoveDone",     amx_SetMoveDone     },
+	{ "FClassnameIs",     amx_FClassnameIs    },
+	{ "GetGrenadeType",   amx_GetGrenadeType  },
+	{ "engset_view",      amx_engset_view     },
+	{ "get_viewent",      amx_get_viewent     },
+	{ "get_key_value",    amx_get_key_value   },
+	{ "set_key_value",    amx_set_key_value   },
+	{ "GetBonePosition",  amx_GetBonePosition },
+	{ "GetAttachment",    amx_GetAttachment   },
+	{ "GetBodygroup",     amx_GetBodygroup    },
+	{ "SetBodygroup",     amx_SetBodygroup    },
+	{ "SetThink",         amx_SetThink        },
+	{ "SetTouch",         amx_SetTouch        },
+	{ "SetUse",           amx_SetUse          },
+	{ "SetBlocked",       amx_SetBlocked      },
+	{ "SetMoveDone",      amx_SetMoveDone     },
 
 	{ nullptr, nullptr }
 };
