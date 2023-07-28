@@ -1004,3 +1004,16 @@ native rg_spawn_head_gib(const index);
 * @noreturn
 */
 native rg_spawn_random_gibs(const index, const cGibs, const bool:bHuman = true);
+
+native rg_spawn_grenade(WeaponIdType:weaponId, pevOwner, Float:vecSrc[3], Float:vecThrow[3], Float:time, iTeam, usEvent);
+native rg_create_weaponbox(const pItem, const pPlayerOwner, const modelName[], Float:origin[3], Float:angles[3], Float:velocity[3], Float:lifeTime, bool:packAmmo);
+native rg_remove_entity(const pEntity);
+native rg_decal_trace(const pTrace, decalNumber);
+native rg_emit_texture_sound(const ptr, Float:vecSrc[3], Float:vecEnd[3], iBulletType);
+native rg_add_ammo_registry(const szAmmoname[]);
+native rg_weapon_deploy(const entity, const szViewModel[], const szWeaponModel[], iAnim, szAnimExt[], skiplocal = 0);
+native rg_weapon_reload(const entity, iClipSize, iAnim, Float:fDelay);
+native rg_weapon_shotgun_reload(const entity, iAnim, iStartAnim, Float:fDelay, Float:fStartDelay, const pszReloadSound1[] = "", const pszReloadSound2[] = "");
+native rg_switch_best_weapon(const player, const currentWeapon = 0);
+native rg_disappear(const player);
+native rg_death_notice(const pVictim, const pKiller, const pevInflictor);
