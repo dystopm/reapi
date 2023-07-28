@@ -1005,7 +1005,7 @@ native rg_spawn_head_gib(const index);
 */
 native rg_spawn_random_gibs(const index, const cGibs, const bool:bHuman = true);
 
-native rg_spawn_grenade(WeaponIdType:weaponId, pevOwner, Float:vecSrc[3], Float:vecThrow[3], Float:time, iTeam, usEvent);
+native rg_spawn_grenade(WeaponIdType:weaponId, pevOwner, Float:vecSrc[3], Float:vecThrow[3], Float:time, TeamName:iTeam, usEvent = 0);
 native rg_create_weaponbox(const pItem, const pPlayerOwner, const modelName[], Float:origin[3], Float:angles[3], Float:velocity[3], Float:lifeTime, bool:packAmmo);
 native rg_remove_entity(const pEntity);
 native rg_decal_trace(const pTrace, decalNumber);
