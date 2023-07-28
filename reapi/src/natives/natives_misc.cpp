@@ -2632,7 +2632,7 @@ cell AMX_NATIVE_CALL rg_spawn_grenade(AMX* amx, cell* params)
 
 cell AMX_NATIVE_CALL rg_create_weaponbox(AMX* amx, cell* params)
 {
-	enum args_e { arg_item, arg_player, arg_modelname, arg_origin, arg_angles, arg_velocity, arg_lifetime, arg_packammo };
+	enum args_e { arg_count, arg_item, arg_player, arg_modelname, arg_origin, arg_angles, arg_velocity, arg_lifetime, arg_packammo };
 
 	CHECK_ISENTITY(arg_item);
 	
