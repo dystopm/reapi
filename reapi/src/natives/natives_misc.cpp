@@ -2762,14 +2762,11 @@ cell AMX_NATIVE_CALL rg_weapon_deploy(AMX* amx, cell* params)
 	}
 
 	char viewmodelbuffer[MAX_PATH], weaponmodelbuffer[MAX_PATH], animextbuffer[32];
-
-	return pCSWeapon->DefaultDeploy(getAmxString(getAmxAddr(amx, params[arg_viewmodel]), viewmodelbuffer, sizeof (viewmodelbuffer) - 1, nullptr), 
-		getAmxString(getAmxAddr(amx, params[arg_weaponmodel]), weaponmodelbuffer, sizeof (weaponmodelbuffer) - 1, nullptr), 
-		(int)params[arg_anim], 
-		getAmxString(getAmxAddr(amx, params[arg_animextension]), animextbuffer, sizeof (animextbuffer) - 1, nullptr), 
-		(int)params[arg_skiplocal]) ?
-			TRUE :
-			FALSE ;
+	getAmxString(amx, params[arg_viewmodel], viewmodelbuffer);
+	getAmxString(amx, params[arg_weaponmodel], weaponmodelbuffer);
+	getAmxString(amx, params[arg_animextension], animextbuffer);
+	
+	return pCSWeapon->DefaultDeploy(viewmodelbuffer, weaponmodelbuffer, (int)params[arg_anim], animextbuffer, (int)params[arg_skiplocal]) ? TRUE : FALSE;
 }
 
 cell AMX_NATIVE_CALL rg_weapon_reload(AMX* amx, cell* params)
