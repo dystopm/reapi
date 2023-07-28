@@ -2939,20 +2939,6 @@ cell AMX_NATIVE_CALL rg_disappear(AMX* amx, cell* params)
 	return TRUE;
 }
 
-cell AMX_NATIVE_CALL rg_get_bodygroup(AMX* amx, cell* params)
-{
-	enum args_e { arg_count, arg_ };
-
-	return TRUE;
-}
-
-cell AMX_NATIVE_CALL rg_set_bodygroup(AMX* amx, cell* params)
-{
-	enum args_e { arg_count, arg_ };
-
-	return TRUE;
-}
-
 cell AMX_NATIVE_CALL rg_death_notice(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_victim, arg_killer, arg_inflictor };
