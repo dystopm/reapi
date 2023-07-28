@@ -38,6 +38,7 @@ enum SecondaryAtkState : uint8_t
 class CBasePlayerWeapon;
 class CCSPlayerWeapon: public CCSPlayerItem
 {
+	DECLARE_CLASS_TYPES(CCSPlayerWeapon, CCSPlayerItem);
 public:
 	CCSPlayerWeapon() :
 		m_iStateSecondaryAttack(WEAPON_SECONDARY_ATTACK_NONE)
