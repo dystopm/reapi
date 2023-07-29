@@ -2878,6 +2878,102 @@ cell AMX_NATIVE_CALL rg_weapon_shotgun_reload(AMX* amx, cell* params)
 	virtual void SendWeaponAnim(int iAnim, int skiplocal = 0) = 0;
 */
 
+cell AMX_NATIVE_CALL rg_weapon_send_animation(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_weapon, arg_anim, arg_skiplocal };
+	
+	CBasePlayerWeapon *pWeapon;
+	
+	if (params[arg_weapon] > 0 && params[arg_weapon] <= gpGlobals->maxClients)
+	{
+		CHECK_ISPLAYER(arg_weapon);
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_weapon]);
+		CHECK_CONNECTED(pPlayer, arg_weapon);
+
+		if(!pPlayer->IsAlive()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d not alive", __FUNCTION__, params[arg_weapon]);
+			return FALSE;
+		}
+
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+	}
+	else
+	{
+		CHECK_ISENTITY(arg_weapon);	
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+	}
+	
+	if (unlikely(pWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (!pWeapon->IsWeapon()) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+		return FALSE;
+	}
+	
+	CCSPlayerWeapon *pCSWeapon = pWeapon->CSPlayerWeapon();
+	if (unlikely(pCSWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized m_pEntity.", __FUNCTION__);
+		return FALSE;
+	}
+	
+	CAmxArgs args(amx, params);
+	
+	pCSWeapon->SendWeaponAnim(args[arg_anim], args[arg_skiplocal]);
+	return TRUE;
+}
+
+cell AMX_NATIVE_CALL rg_weapon_kickback(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_weapon, arg_up_base, arg_lateral_base, arg_up_modifier, arg_lateral_modifier, arg_up_max, arg_lateral_max, arg_direction_change };
+	
+	CBasePlayerWeapon *pWeapon;
+	
+	if (params[arg_weapon] > 0 && params[arg_weapon] <= gpGlobals->maxClients)
+	{
+		CHECK_ISPLAYER(arg_weapon);
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_weapon]);
+		CHECK_CONNECTED(pPlayer, arg_weapon);
+
+		if(!pPlayer->IsAlive()) {
+			AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %d not alive", __FUNCTION__, params[arg_weapon]);
+			return FALSE;
+		}
+
+		pWeapon = static_cast<CBasePlayerWeapon *>(pPlayer->m_pActiveItem);
+	}
+	else
+	{
+		CHECK_ISENTITY(arg_weapon);	
+
+		pWeapon = getPrivate<CBasePlayerWeapon>(params[arg_weapon]);
+	}
+	
+	if (unlikely(pWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (!pWeapon->IsWeapon()) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: #%d entity is not a weapon.", __FUNCTION__, indexOfEdict(pWeapon->pev));
+		return FALSE;
+	}
+	
+	CCSPlayerWeapon *pCSWeapon = pWeapon->CSPlayerWeapon();
+	if (unlikely(pCSWeapon == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized m_pEntity.", __FUNCTION__);
+		return FALSE;
+	}
+	
+	CAmxArgs args(amx, params);
+	
+	pCSWeapon->KickBack(args[arg_up_base], args[arg_lateral_base], args[arg_up_modifier], args[arg_lateral_modifier], args[arg_up_max], args[arg_lateral_max], args[arg_direction_change]);
+	return TRUE;
+}
+
 cell AMX_NATIVE_CALL rg_switch_best_weapon(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_index, arg_weapon };
@@ -2920,7 +3016,7 @@ cell AMX_NATIVE_CALL rg_switch_best_weapon(AMX* amx, cell* params)
 		}
 	}
 
-	return CSGameRules()->GetNextBestWeapon(pPlayer, pWeapon);;
+	return CSGameRules()->GetNextBestWeapon(pPlayer, pWeapon);
 }
 
 cell AMX_NATIVE_CALL rg_disappear(AMX* amx, cell* params)
@@ -3059,6 +3155,8 @@ AMX_NATIVE_INFO Misc_Natives_RG[] =
 	{ "rg_weapon_deploy",             rg_weapon_deploy             },
 	{ "rg_weapon_reload",             rg_weapon_reload             },
 	{ "rg_weapon_shotgun_reload",     rg_weapon_shotgun_reload     },
+	{ "rg_weapon_send_animation",     rg_weapon_send_animation     },
+	{ "rg_weapon_kickback",           rg_weapon_kickback           },
 	{ "rg_switch_best_weapon",        rg_switch_best_weapon        },
 	{ "rg_disappear",                 rg_disappear                 },
 	{ "rg_death_notice",              rg_death_notice              },
