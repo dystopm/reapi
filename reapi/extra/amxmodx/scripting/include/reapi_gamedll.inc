@@ -1013,7 +1013,7 @@ native rg_remove_entity(const pEntity);
 
 native rg_decal_trace(const ptr, decalNumber);
 
-native rg_emit_texture_sound(const ptr, Float:vecSrc[3], Float:vecEnd[3], iBulletType);
+native rg_emit_texture_sound(const ptr, Float:vecSrc[3], Float:vecEnd[3], Bullet:iBulletType);
 
 native rg_add_ammo_registry(const szAmmoname[]);
 
