@@ -2709,8 +2709,7 @@ cell AMX_NATIVE_CALL rg_add_ammo_registry(AMX* amx, cell* params)
 		return FALSE;
 	}
 	
-	g_ReGameFuncs->AddAmmoNameToAmmoRegistry(ammoname);
-	return TRUE;
+	return (cell)g_ReGameFuncs->AddAmmoNameToAmmoRegistry(ammoname);
 }
 
 /*
