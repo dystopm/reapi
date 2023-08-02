@@ -2702,14 +2702,14 @@ cell AMX_NATIVE_CALL rg_add_ammo_registry(AMX* amx, cell* params)
 	enum args_e { arg_count, arg_ammoname };
 
 	char ammonamebuf[190];
-	const char *ammoname  = getAmxString(amx, params[arg_ammoname], ammonamebuf);
+	string_t ammoname = getAmxStringAlloc(amx, params[arg_ammoname], ammonamebuf);
 
-	if (!ammoname || ammoname[0] == '\0') {
+	if (!ammonamebuf || ammonamebuf[0] == '\0') {
 		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: empty ammo name", __FUNCTION__);
 		return FALSE;
 	}
-	
-	return (cell)g_ReGameFuncs->AddAmmoNameToAmmoRegistry(ammoname);
+
+	return (cell)g_ReGameFuncs->AddAmmoNameToAmmoRegistry(STRING(ammoname));
 }
 
 /*
