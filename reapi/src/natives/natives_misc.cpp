@@ -3022,7 +3022,7 @@ cell AMX_NATIVE_CALL rg_disappear(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_index };
 
-	CHECK_ISPLAYER(params[arg_index])
+	CHECK_ISPLAYER(arg_index)
 
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
 	CHECK_CONNECTED(pPlayer, arg_index);
@@ -3037,12 +3037,12 @@ cell AMX_NATIVE_CALL rg_death_notice(AMX* amx, cell* params)
 
 	CHECK_GAMERULES();
 
-	CHECK_ISPLAYER(params[arg_victim])
+	CHECK_ISPLAYER(arg_victim)
 
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_victim]);
 	CHECK_CONNECTED(pPlayer, arg_victim);
 
-	CHECK_ISENTITY(params[arg_killer])
+	CHECK_ISENTITY(arg_killer)
 
 	CAmxArgs args(amx, params);
 	CSGameRules()->DeathNotice(pPlayer, args[arg_killer], args[arg_inflictor]);
