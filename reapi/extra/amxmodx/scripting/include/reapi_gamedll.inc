@@ -1031,4 +1031,6 @@ native rg_switch_best_weapon(const player, const currentWeapon = 0);
 
 native rg_disappear(const player);
 
+native rg_set_observer_mode(const player, const mode);
+
 native rg_death_notice(const pVictim, const pKiller, const pevInflictor);

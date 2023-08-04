@@ -3031,6 +3031,21 @@ cell AMX_NATIVE_CALL rg_disappear(AMX* amx, cell* params)
 	return TRUE;
 }
 
+
+cell AMX_NATIVE_CALL rg_set_observer_mode(AMX* amx, cell* params)
+{
+	enum args_e { arg_count, arg_index, arg_mode };
+
+	CHECK_ISPLAYER(arg_index)
+
+	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
+	CHECK_CONNECTED(pPlayer, arg_index);
+
+	pPlayer->CSPlayer()->Observer_SetMode((int)params[arg_mode]);
+	return TRUE;
+}
+
+
 cell AMX_NATIVE_CALL rg_death_notice(AMX* amx, cell* params)
 {
 	enum args_e { arg_count, arg_victim, arg_killer, arg_inflictor };
@@ -3158,6 +3173,7 @@ AMX_NATIVE_INFO Misc_Natives_RG[] =
 	{ "rg_weapon_kickback",           rg_weapon_kickback           },
 	{ "rg_switch_best_weapon",        rg_switch_best_weapon        },
 	{ "rg_disappear",                 rg_disappear                 },
+	{ "rg_set_observer_mode",         rg_set_observer_mode         },
 	{ "rg_death_notice",              rg_death_notice              },
 
 	{ nullptr, nullptr }
