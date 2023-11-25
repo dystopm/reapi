@@ -419,8 +419,9 @@ native rg_update_teamscores(const iCtsWins = 0, const iTsWins = 0, const bool:bA
 *
 * @param classname      Entity classname
 * @param useHashTable   Use this only for known game entities
-*
-* @note: Do not use this if you use a custom classname
+* @note: Do not use this if you plan to change custom classname an entity after creation,
+*        otherwise it will never be release from hash table even if an entity was destroyed,
+*        and that to lead table to inflate/memory leaks
 *
 * @return               Index of the created entity or 0 otherwise
 */
@@ -495,12 +496,14 @@ native rg_set_weapon_info(const {WeaponIdType,_}:weapon_id, WpnInfo:type, any:..
 /*
 * Remove all the player's stuff in a specific slot.
 *
-* @param index  Client index
-* @param slot   The slot that will be emptied
+* @param index          Client index
+* @param slot           The slot that will be emptied
+* @param removeAmmo     Remove ammunition
 *
-* @return       1 on success, 0 otherwise
+* @return               1 - successful removal of all items in the slot or the slot is empty
+*                       0 - if at least one item failed to remove
 */
-native rg_remove_items_by_slot(const index, const InventorySlotType:slot);
+native rg_remove_items_by_slot(const index, const InventorySlotType:slot, const bool:removeAmmo = true);
 
 /*
 * Drop to floor all the player's stuff by specific slot.
@@ -508,7 +511,8 @@ native rg_remove_items_by_slot(const index, const InventorySlotType:slot);
 * @param index      Client index
 * @param slot       Specific slot for remove of each item.
 *
-* @return           1 on success, 0 otherwise
+* @return           1 - successful drop of all items in the slot or the slot is empty
+*                   0 - if at least one item failed to drop
 */
 native rg_drop_items_by_slot(const index, const InventorySlotType:slot);
 
@@ -526,9 +530,9 @@ native rg_remove_all_items(const index, const bool:removeSuit = false);
 * Forces the player to drop the specified item classname.
 *
 * @param index      Client index
-* @param item_name  Item classname
+* @param item_name  Item classname, if no name, the active item classname
 *
-* @return           1 on success, 0 otherwise
+* @return           Entity index of weaponbox, AMX_NULLENT (-1) otherwise
 *
 */
 native rg_drop_item(const index, const item_name[]);
@@ -864,7 +868,7 @@ native rg_send_bartime(const index, const duration, const bool:observer = true);
 *
 * @noreturn
 */
-native rg_send_bartime2(const index, const duration, const startPercent, const bool:observer = true);
+native rg_send_bartime2(const index, const duration, const Float:startPercent, const bool:observer = true);
 
 /*
 * Sends the SendAudio message - plays the specified audio.
@@ -897,7 +901,7 @@ native rg_get_iteminfo(const ent, ItemInfo:type, any:...);
 
 /**
 * Sets a parameter of the global CBasePlayerItem::m_ItemInfoArray array
-* @note To have effect on client side (i.g. ammo size on HUD) you should 
+* @note To have effect on client side (i.g. ammo size on HUD) you should
 *       alter this value BEFORE WeaponList message is sent to client, or
 *		force it's alteration by sending again to the specific client.
 *		Hooking WeaponList message with AMXX's register_message is a choice.

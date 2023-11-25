@@ -30,6 +30,7 @@
 #define MOVEVAR_MEMBERS(mx)      STRUCT_MEMBERS(movevars_t, mx, mv_##mx)
 #define UCMD_MEMBERS(mx)         STRUCT_MEMBERS(usercmd_s, mx, ucmd_##mx)
 #define PMTRACE_MEMBERS(mx)      STRUCT_MEMBERS(pmtrace_s, mx, pmt_##mx)
+#define NETADR_MEMBERS(mx)       STRUCT_MEMBERS(netadr_t, mx, netadr_##mx)
 #define CSPL_MEMBERS(mx)         CLASS_MEMBERS(CCSPlayer, mx, mx)
 #define BASEITEM_MEMBERS(mx)     CLASS_MEMBERS(CBasePlayerItem, mx, mx)
 #define BASEWPN_MEMBERS(mx)      CLASS_MEMBERS_PREF(CBasePlayerWeapon, mx, m_Weapon_##mx, m_)
@@ -112,6 +113,7 @@ inline MType getMemberType(ArmorType)           { return MEMBER_INTEGER; }
 inline MType getMemberType(ArmouryItemPack)     { return MEMBER_INTEGER; }
 inline MType getMemberType(InfoMapBuyParam)     { return MEMBER_INTEGER; }
 inline MType getMemberType(SecondaryAtkState)   { return MEMBER_INTEGER; }
+inline MType getMemberType(netadrtype_t)        { return MEMBER_INTEGER; }
 
 inline MType getMemberType(TraceResult)         { return MEMBER_TRACERESULT; }
 
@@ -1053,6 +1055,12 @@ member_t memberlist_gib[] = {
 	GIB_MEMBERS(lifeTime),
 };
 
+member_t memberlist_netadr[] = {
+	NETADR_MEMBERS(type),
+	NETADR_MEMBERS(ip),
+	NETADR_MEMBERS(port)
+};
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif // #ifdef __GNUC__
@@ -1116,6 +1124,7 @@ member_t *memberlist_t::operator[](size_t members) const
 		CASE(mapinfo)
 		CASE(csplayerweapon)
 		CASE(gib)
+		CASE(netadr)
 	}
 
 	#undef CASE

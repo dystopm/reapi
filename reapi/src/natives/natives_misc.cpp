@@ -542,8 +542,9 @@ cell AMX_NATIVE_CALL rg_update_teamscores(AMX *amx, cell *params)
 *
 * @param classname      Entity classname
 * @param useHashTable   Use this only for known game entities
-*
-* @note: Do not use this if you use a custom classname
+* @note: Do not use this if you plan to change custom classname an entity after creation,
+*        otherwise it will never be release from hash table even if an entity was destroyed,
+*        and that to lead table to inflate/memory leaks
 *
 * @return               Index of the created entity or 0 otherwise
 *
@@ -904,58 +905,35 @@ cell AMX_NATIVE_CALL rg_set_weapon_info(AMX *amx, cell *params)
 /*
 * Remove all the player's stuff in a specific slot.
 *
-* @param index  Client index
-* @param slot   The slot that will be emptied
+* @param index          Client index
+* @param slot           The slot that will be emptied
+* @param removeAmmo     Remove ammunition
 *
-* @return       1 on success, 0 otherwise
+* @return               1 - successful removal of all items in the slot or the slot is empty
+*                       0 - if at least one item failed to remove
 *
-* native rg_remove_items_by_slot(const index, const InventorySlotType:slot);
+* native rg_remove_items_by_slot(const index, const InventorySlotType:slot, const bool:removeAmmo = true);
 */
 cell AMX_NATIVE_CALL rg_remove_items_by_slot(AMX *amx, cell *params)
 {
-	enum args_e { arg_count, arg_index, arg_slot };
+	enum args_e { arg_count, arg_index, arg_slot, arg_remammo };
 
 	CHECK_ISPLAYER(arg_index);
 
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
 	CHECK_CONNECTED(pPlayer, arg_index);
 
-	if (params[arg_slot] == C4_SLOT)
+	bool success = true;
+
+	pPlayer->ForEachItem(params[arg_slot], [&](CBasePlayerItem *pItem)
 	{
-		pPlayer->CSPlayer()->RemovePlayerItemEx("weapon_c4", true);
-	}
-	else
-	{
-		pPlayer->ForEachItem(params[arg_slot], [pPlayer](CBasePlayerItem *pItem)
-		{
-			if (pItem->IsWeapon()) {
-				if (pItem == pPlayer->m_pActiveItem) {
-					((CBasePlayerWeapon *)pItem)->RetireWeapon();
-				}
+		// Compatible with older versions of the plugin,
+		// which still only pass two parameters
+		success &= pPlayer->CSPlayer()->RemovePlayerItemEx(STRING(pItem->pev->classname), (PARAMS_COUNT < 3 || params[arg_remammo] != 0)) ? true : false;
+		return false;
+	});
 
-				pPlayer->m_rgAmmo[ pItem->PrimaryAmmoIndex() ] = 0;
-			}
-
-			if (pPlayer->RemovePlayerItem(pItem)) {
-				pPlayer->pev->weapons &= ~(1 << pItem->m_iId);
-
-				// No more weapon
-				if ((pPlayer->pev->weapons & ~(1 << WEAPON_SUIT)) == 0) {
-					pPlayer->m_iHideHUD |= HIDEHUD_WEAPONS;
-				}
-
-				pItem->Kill();
-			}
-
-			return false;
-		});
-
-		if (!pPlayer->m_rgpPlayerItems[PRIMARY_WEAPON_SLOT]) {
-			pPlayer->m_bHasPrimary = false;
-		}
-	}
-
-	return TRUE;
+	return success ? TRUE : FALSE;
 }
 
 /*
@@ -964,7 +942,8 @@ cell AMX_NATIVE_CALL rg_remove_items_by_slot(AMX *amx, cell *params)
 * @param index      Client index
 * @param slot       Specific slot for remove of each item.
 *
-* @return           1 on success, 0 otherwise
+* @return           1 - successful drop of all items in the slot or the slot is empty
+*                   0 - if at least one item failed to drop
 *
 * native rg_drop_items_by_slot(const index, const InventorySlotType:slot);
 */
@@ -977,12 +956,14 @@ cell AMX_NATIVE_CALL rg_drop_items_by_slot(AMX *amx, cell *params)
 	CBasePlayer *pPlayer = UTIL_PlayerByIndex(params[arg_index]);
 	CHECK_CONNECTED(pPlayer, arg_index);
 
-	pPlayer->ForEachItem(params[arg_slot], [pPlayer](CBasePlayerItem *pItem) {
-		pPlayer->CSPlayer()->DropPlayerItem(STRING(pItem->pev->classname));
+	bool success = true;
+
+	pPlayer->ForEachItem(params[arg_slot], [&](CBasePlayerItem *pItem) {
+		success &= pPlayer->CSPlayer()->DropPlayerItem(STRING(pItem->pev->classname)) ? true : false;
 		return false;
 	});
 
-	return TRUE;
+	return success ? TRUE : FALSE;
 }
 
 /*
@@ -1012,9 +993,9 @@ cell AMX_NATIVE_CALL rg_remove_all_items(AMX *amx, cell *params)
 * Forces the player to drop the specified item classname.
 *
 * @param index      Client index
-* @param item_name  Item classname
+* @param item_name  Item classname, if no name, the active item classname
 *
-* @return           1 on success, 0 otherwise
+* @return           Entity index of weaponbox, AMX_NULLENT (-1) otherwise
 *
 * native rg_drop_item(const index, const item_name[]);
 */
@@ -1028,8 +1009,12 @@ cell AMX_NATIVE_CALL rg_drop_item(AMX *amx, cell *params)
 	CHECK_CONNECTED(pPlayer, arg_index);
 
 	char item[256];
-	pPlayer->CSPlayer()->DropPlayerItem(getAmxString(amx, params[arg_item_name], item));
-	return TRUE;
+	auto pEntity = pPlayer->CSPlayer()->DropPlayerItem(getAmxString(amx, params[arg_item_name], item));
+
+	if (pEntity)
+		return indexOfPDataAmx(pEntity);
+
+	return AMX_NULLENT;
 }
 
 /*
@@ -1259,7 +1244,7 @@ cell AMX_NATIVE_CALL rg_give_defusekit(AMX *amx, cell *params)
 	if (CSGameRules() != nullptr && !CSGameRules()->m_bMapHasBombTarget && !CSGameRules()->m_bMapHasBombZone) {
 		return FALSE;
 	}
-	
+
 	if (pPlayer->m_iTeam != CT) {
 		return FALSE;
 	}
@@ -2029,7 +2014,7 @@ cell AMX_NATIVE_CALL rg_send_bartime(AMX *amx, cell *params)
 *
 * @noreturn
 *
-* native rg_send_bartime2(const index, const duration, const startPercent, const bool:observer = true);
+* native rg_send_bartime2(const index, const duration, const Float:startPercent, const bool:observer = true);
 */
 cell AMX_NATIVE_CALL rg_send_bartime2(AMX *amx, cell *params)
 {
@@ -2039,15 +2024,16 @@ cell AMX_NATIVE_CALL rg_send_bartime2(AMX *amx, cell *params)
 	CHECK_CONNECTED(pPlayer, arg_index);
 
 	CAmxArgs args(amx, params);
+	float startPercent = args[arg_start_percent];
 	if (!args[arg_observer]) {
 		EMESSAGE_BEGIN(MSG_ONE_UNRELIABLE, gmsgBarTime2, nullptr, pPlayer->edict());
 			EWRITE_SHORT(args[arg_time]);
-			EWRITE_SHORT(args[arg_start_percent]);
+			EWRITE_SHORT(startPercent);
 		EMESSAGE_END();
 		return TRUE;
 	}
 
-	pPlayer->CSPlayer()->SetProgressBarTime2(args[arg_time], args[arg_start_percent]);
+	pPlayer->CSPlayer()->SetProgressBarTime2(args[arg_time], startPercent);
 	return TRUE;
 }
 
@@ -2245,7 +2231,7 @@ cell AMX_NATIVE_CALL rg_get_iteminfo(AMX *amx, cell *params)
 
 /**
 * Sets a parameter of the global CBasePlayerItem::m_ItemInfoArray array
-* @note To have effect on client side (i.g. ammo size on HUD) you should 
+* @note To have effect on client side (i.g. ammo size on HUD) you should
 *       alter this value BEFORE WeaponList message is sent to client, or
 *		force it's alteration by sending again to the specific client.
 *		Hooking WeaponList message with AMXX's register_message is a choice.
@@ -2314,7 +2300,7 @@ cell AMX_NATIVE_CALL rg_get_global_iteminfo(AMX *amx, cell *params)
 	}
 
 	ItemInfo_e type = static_cast<ItemInfo_e>(params[arg_type]);
-	if ((type == ItemInfo_pszAmmo1 || type == ItemInfo_pszAmmo2 || type == ItemInfo_pszName) && PARAMS_COUNT != 4) 
+	if ((type == ItemInfo_pszAmmo1 || type == ItemInfo_pszAmmo2 || type == ItemInfo_pszName) && PARAMS_COUNT != 4)
 	{
 		AMXX_LogError(amx, AMX_ERR_NATIVE, "Bad arg count. Expected %d, got %d.", 4, PARAMS_COUNT);
 		return FALSE;
@@ -3342,7 +3328,7 @@ cell AMX_NATIVE_CALL rh_drop_client(AMX *amx, cell *params)
 *
 * @param output     Buffer to copy the ip address
 * @param len        Maximum buffer size
-* 
+*
 * @noreturn
 *
 * native rh_get_net_from(output[], len);
@@ -3352,10 +3338,10 @@ cell AMX_NATIVE_CALL rh_get_net_from(AMX* amx, cell* params)
 	enum args_e { arg_count, arg_output, arg_maxlen };
 
 	cell *dest = getAmxAddr(amx, params[arg_output]);
-	char *addr = NET_AdrToString(*g_RehldsData->GetNetFrom());
+	const char *addr = NET_AdrToString(*g_RehldsData->GetNetFrom());
 
 	setAmxString(dest, addr, params[arg_maxlen]);
-	
+
 	return TRUE;
 }
 
@@ -3380,7 +3366,7 @@ cell AMX_NATIVE_CALL rh_get_client_connect_time(AMX *amx, cell *params)
 		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: player %i is not connected", __FUNCTION__, params[arg_index]);
 		return FALSE;
 	}
-	
+
 	return (cell)(g_RehldsFuncs->GetRealTime() - pClient->netchan.connect_time);
 }
 
