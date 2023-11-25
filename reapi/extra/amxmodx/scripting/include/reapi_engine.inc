@@ -92,6 +92,7 @@ native GetAttachment(const entity, const attachment, Float:vecOrigin[3], Float:v
 *
 * @return           1 on success, 0 otherwise
 * @error            If the index is not within the range of 1 to maxEntities or
+*                   the entity is not valid, an error will be thrown.
 *      
 */      
 native SetBodygroup(const entity, const group, const value);
@@ -104,9 +105,25 @@ native SetBodygroup(const entity, const group, const value);
 *
 * @return           Body group value
 * @error            If the index is not within the range of 1 to maxEntities or
+*                   the entity is not valid, an error will be thrown.
 *      
 */ 
-native GetBodygrouy(const entity, const group);
+native GetBodygroup(const entity, const group);
+
+/*
+* Gets sequence information based on entity's model current sequence index
+*
+* @param entity             Entity index
+* @param piFlags            Sequence flags (1 = sequence loops)
+* @param pflFrameRate       Sequence framerate
+* @param pflGroundSpeed     Sequence ground speed
+*
+* @return                   True on success, false otherwise
+* @error                    If the index is not within the range of 1 to maxEntities or
+*                           the entity is not valid, an error will be thrown.
+*      
+*/ 
+native bool:GetSequenceInfo(const entity, &piFlags, &Float:pflFrameRate, &Float:pflGroundSpeed);
 
 /*
 * Sets the name of the map.

@@ -299,6 +299,30 @@ cell AMX_NATIVE_CALL amx_SetBodygroup(AMX *amx, cell *params)
 	return TRUE;
 }
 
+cell AMX_NATIVE_CALL amx_GetSequenceInfo(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_flags, arg_framerate, arg_groundspeed };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return FALSE;
+	}
+
+	int* pflags = reinterpret_cast<int*>(getAmxAddr(amx, params[arg_flags]));
+	float* pframerate = reinterpret_cast<float*>(getAmxAddr(amx, params[arg_framerate]));
+	float* pgroundspeed = reinterpret_cast<float*>(getAmxAddr(amx, params[arg_groundspeed]));
+
+	return (cell)GetSequenceInfo2(pEntity, pflags, pframerate, pgroundspeed);
+}
+
 /*
 * Sets Think callback for entity
 *
@@ -532,6 +556,7 @@ AMX_NATIVE_INFO Natives_Common[] =
 	{ "GetAttachment",    amx_GetAttachment   },
 	{ "GetBodygroup",     amx_GetBodygroup    },
 	{ "SetBodygroup",     amx_SetBodygroup    },
+	{ "GetSequenceInfo",  amx_GetSequenceInfo },
 	{ "SetThink",         amx_SetThink        },
 	{ "SetTouch",         amx_SetTouch        },
 	{ "SetUse",           amx_SetUse          },

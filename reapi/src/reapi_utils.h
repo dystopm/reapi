@@ -57,6 +57,7 @@ void GetBonePosition(CBaseEntity *pEntity, int iBone, Vector *pVecOrigin, Vector
 void GetAttachment(CBaseEntity *pEntity, int iAttachment, Vector *pVecOrigin, Vector *pVecAngles);
 void SetBodygroup(CBaseEntity *pEntity, int iGroup, int iValue);
 int GetBodygroup(CBaseEntity *pEntity, int iGroup);
+bool GetSequenceInfo2(CBaseEntity *pEntity, int *piFlags, float *pflFrameRate, float *pflGroundSpeed);
 void RemoveOrDropItem(CBasePlayer *pPlayer, CBasePlayerItem *pItem, GiveType type);
 
 const char *getATypeStr(AType type);
