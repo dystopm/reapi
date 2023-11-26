@@ -379,6 +379,107 @@ cell AMX_NATIVE_CALL amx_GetSequenceInfo(AMX *amx, cell *params)
 }
 
 /*
+* Sets body group value based on entity's model group
+*
+* @param entity     Entity index
+* @param group      Number of entity's model group index
+* @param value      Value to assign
+*
+* @return           1 on success, 0 otherwise
+* @error            If the index is not within the range of 1 to maxEntities or
+*                   the entity is not valid, an error will be thrown.
+*      
+*/ 
+cell AMX_NATIVE_CALL amx_GetBodygroup(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_group };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return 0;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return 0;
+	}
+
+	return (cell)GetBodygroup(pEntity, params[arg_group]);
+}
+
+/*
+* Gets body group value based on entity's model group
+*
+* @param entity     Entity index
+* @param group      Number of entity's model group index
+*
+* @return           Body group value
+* @error            If the index is not within the range of 1 to maxEntities or
+*                   the entity is not valid, an error will be thrown.
+*      
+*/ 
+cell AMX_NATIVE_CALL amx_SetBodygroup(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_group, arg_value };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return FALSE;
+	}
+
+	SetBodygroup(pEntity, params[arg_group], params[arg_value]);
+	return TRUE;
+}
+
+/*
+* Gets sequence information based on entity's model current sequence index
+*
+* @param entity             Entity index
+* @param piFlags            Sequence flags (1 = sequence loops)
+* @param pflFrameRate       Sequence framerate
+* @param pflGroundSpeed     Sequence ground speed
+*
+* @return                   True on success, false otherwise
+* @error                    If the index is not within the range of 1 to maxEntities or
+*                           the entity is not valid, an error will be thrown.
+*      
+*/ 
+cell AMX_NATIVE_CALL amx_GetSequenceInfo(AMX *amx, cell *params)
+{
+	enum args_e { arg_count, arg_index, arg_flags, arg_framerate, arg_groundspeed };
+
+	CHECK_ISENTITY(arg_index);
+
+	CBaseEntity *pEntity = getPrivate<CBaseEntity>(params[arg_index]);
+	if (unlikely(pEntity == nullptr)) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: invalid or uninitialized entity", __FUNCTION__);
+		return FALSE;
+	}
+
+	if (FNullEnt(params[arg_index])) {
+		AMXX_LogError(amx, AMX_ERR_NATIVE, "%s: worldspawn not allowed", __FUNCTION__);
+		return FALSE;
+	}
+
+	int* pflags = reinterpret_cast<int*>(getAmxAddr(amx, params[arg_flags]));
+	float* pframerate = reinterpret_cast<float*>(getAmxAddr(amx, params[arg_framerate]));
+	float* pgroundspeed = reinterpret_cast<float*>(getAmxAddr(amx, params[arg_groundspeed]));
+
+	return (cell)GetSequenceInfo2(pEntity, pflags, pframerate, pgroundspeed);
+}
+
+/*
 * Sets Think callback for entity
 *
 * @param entity     Entity index

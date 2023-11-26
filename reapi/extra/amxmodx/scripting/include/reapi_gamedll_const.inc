@@ -1165,6 +1165,7 @@ enum GamedllFunc_CSGameRules
 
 	/*
 	* Description:      -
+	* Return type:      CBasePlayer * (Entity index of player)
 	* Params:           ()
 	*/
 	RG_CSGameRules_GiveC4,
@@ -4831,7 +4832,7 @@ enum CCSPlayer_Members
 	* Get params:       Float:get_member(index, member);
 	* Set params:       set_member(index, member, Float:value);
 	*/
-	m_flLongJumpHeight,	
+	m_flLongJumpHeight,
 
 	/*
 	* Description:      Player horizontal jump height with longjump
@@ -4839,7 +4840,7 @@ enum CCSPlayer_Members
 	* Get params:       Float:get_member(index, member);
 	* Set params:       set_member(index, member, Float:value);
 	*/
-	m_flLongJumpForce,	
+	m_flLongJumpForce,
 
 	/*
 	* Description:      Player crouch maxspeed multiplier
@@ -4848,6 +4849,22 @@ enum CCSPlayer_Members
 	* Set params:       set_member(index, member, Float:value);
 	*/
 	m_flDuckSpeedMultiplier,
+
+	/*
+	* Description:      How many unanswered kills this player has been dealt by each other player (0-31)
+	* Member type:      int [32]
+	* Get params:       get_member(index, member, element);
+	* Set params:       set_member(index, member, value, element);
+	*/
+	m_iNumKilledByUnanswered,
+
+	/*
+	* Description:      Array of state per other player whether player is dominating other players (0-31)
+	* Member type:      bool [32]
+	* Get params:       get_member(index, member, element);
+	* Set params:       set_member(index, member, value, element);
+	*/
+	m_bPlayerDominated,
 };
 
 /**
@@ -6287,7 +6304,7 @@ enum CCSPlayerWeapon_Members
 };
 
 // API compatibility
-#define m_Weapon_bHasSecondaryAttack	m_Weapon_iStateSecondaryAttack
+#define m_Weapon_bHasSecondaryAttack m_Weapon_iStateSecondaryAttack
 
 /**
 * CGib Members
@@ -6325,4 +6342,26 @@ enum CGib_Members
 	* Set params:       set_member(index, member, Float:value);
 	*/
 	m_Gib_lifeTime,
+};
+
+/**
+* CCSEntity API Members
+*/
+enum CCSEntity_Members
+{
+	/*
+	* Description:      Penetration level of the damage caused by the inflictor
+	* Member type:      unsigned char
+	* Get params:       get_member(index, member);
+	* Set params:       set_member(index, member, value);
+	*/
+	m_ucDmgPenetrationLevel = BEGIN_MEMBER_REGION(csplayerweapon),
+
+	/*
+	* Description:      Cached inflictor passed inside TakeDamage to retrieve in Killed
+	* Member type:      entvars_t *
+	* Get params:       get_member(index, member);
+	* Set params:       set_member(index, member, value);
+	*/
+	m_pevLastInflictor,
 };

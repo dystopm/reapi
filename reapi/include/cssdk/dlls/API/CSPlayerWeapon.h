@@ -28,7 +28,7 @@
 
 #pragma once
 
-enum SecondaryAtkState : uint8_t 
+enum SecondaryAtkState : uint8_t
 {
 	WEAPON_SECONDARY_ATTACK_NONE = 0,
 	WEAPON_SECONDARY_ATTACK_SET,

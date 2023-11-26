@@ -1480,7 +1480,7 @@ enum GameEventType
 	NUM_GAME_EVENTS,
 };
 
-/** 
+/**
 * Weapon secondary attack states
 * For CCSPlayerWeapon::m_iStateSecondaryAttack
 */
