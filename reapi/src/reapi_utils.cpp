@@ -287,6 +287,7 @@ bool GetSequenceInfo2(CBaseEntity *pEntity, int *piFlags, float *pflFrameRate, f
 		*pflGroundSpeed = Q_sqrt(pseqdesc->linearmovement[0] * pseqdesc->linearmovement[0] + pseqdesc->linearmovement[1] * pseqdesc->linearmovement[1] + pseqdesc->linearmovement[2] * pseqdesc->linearmovement[2]);
 		*pflGroundSpeed = *pflGroundSpeed * pseqdesc->fps / (pseqdesc->numframes - 1);
 	}
+
 	return true;
 }
 
