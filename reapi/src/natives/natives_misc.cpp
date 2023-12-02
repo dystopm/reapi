@@ -3334,22 +3334,6 @@ AMX_NATIVE_INFO Misc_Natives_RG[] =
 	{ "rg_set_observer_mode",         rg_set_observer_mode         },
 	{ "rg_death_notice",              rg_death_notice              },
 
-	{ "rg_spawn_grenade",             rg_spawn_grenade             },
-	{ "rg_create_weaponbox",          rg_create_weaponbox          },
-	{ "rg_remove_entity",             rg_remove_entity             },
-	{ "rg_decal_trace",               rg_decal_trace               },
-	{ "rg_emit_texture_sound",        rg_emit_texture_sound        },
-	{ "rg_add_ammo_registry",         rg_add_ammo_registry         },
-	{ "rg_weapon_deploy",             rg_weapon_deploy             },
-	{ "rg_weapon_reload",             rg_weapon_reload             },
-	{ "rg_weapon_shotgun_reload",     rg_weapon_shotgun_reload     },
-	{ "rg_weapon_send_animation",     rg_weapon_send_animation     },
-	{ "rg_weapon_kickback",           rg_weapon_kickback           },
-	{ "rg_switch_best_weapon",        rg_switch_best_weapon        },
-	{ "rg_disappear",                 rg_disappear                 },
-	{ "rg_set_observer_mode",         rg_set_observer_mode         },
-	{ "rg_death_notice",              rg_death_notice              },
-
 	{ nullptr, nullptr }
 };
 
