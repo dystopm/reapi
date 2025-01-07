@@ -1766,6 +1766,16 @@ void CSGameRules_SendDeathMessage(IReGameHook_CSGameRules_SendDeathMessage *chai
 	callVoidForward(RG_CSGameRules_SendDeathMessage, original, indexOfPDataAmx(pKiller), indexOfEdict(pVictim->pev), indexOfPDataAmx(pAssister), indexOfEdictAmx(pevInflictor), killerWeaponName, iDeathMessageFlags, iRarityOfKill);
 }
 
+void SendSayMessage(IReGameHook_SendSayMessage *chain, CBasePlayer *pPlayer, BOOL teamonly, char *p, const char *pszFormat, char *pszConsoleFormat, bool bSenderDead, const char *placeName, bool consoleUsesPlaceName)
+{
+	auto original = [chain](int _pPlayer, BOOL _teamonly, char *_p, const char *_pszFormat, char *_pszConsoleFormat, bool _bSenderDead, const char *_placeName, bool _consoleUsesPlaceName)
+	{
+		chain->callNext(getPrivate<CBasePlayer>(_pPlayer), _teamonly, _p, _pszFormat, _pszConsoleFormat, _bSenderDead, _placeName, _consoleUsesPlaceName);
+	};
+
+	callVoidForward(RG_SendSayMessage, original, indexOfEdict(pPlayer->pev), teamonly, p, pszFormat, pszConsoleFormat, bSenderDead, placeName, consoleUsesPlaceName);
+}
+
 /*
 * VTC functions
 */
