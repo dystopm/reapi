@@ -1666,14 +1666,38 @@ void CSGameRules_PlayerGotWeapon(IReGameHook_CSGameRules_PlayerGotWeapon *chain,
 	callVoidForward(RG_CSGameRules_PlayerGotWeapon, original, indexOfEdict(pPlayer->pev), indexOfEdict(pWeapon->pev));
 }
 
-void CBotManager_OnEvent(IReGameHook_CBotManager_OnEvent *chain, GameEventType event, CBaseEntity* pEntity, CBaseEntity* pOther)
+void CBotManager_OnEvent_Default(IReGameHook_CBotManager_OnEvent *chain, GameEventType event, CBaseEntity *pEntity, CBaseEntity *pOther)
 {
-	auto original = [chain](GameEventType _event, int _pEntity, int _pOther)
+	Vector dummy(0, 0, 0);
+	auto original = [chain](GameEventType _event, int _pEntity, int _pOther, cell _pOtherVec)
 	{
 		chain->callNext(_event, getPrivate<CBaseEntity>(_pEntity), getPrivate<CBaseEntity>(_pOther));
 	};
 
-	callVoidForward(RG_CBotManager_OnEvent, original, event, indexOfEdict(pEntity->pev), indexOfEdict(pOther->pev));
+	callVoidForward(RG_CBotManager_OnEvent, original, event, indexOfPDataAmx(pEntity), indexOfPDataAmx(pOther), getAmxVector(dummy)); // 1=event, 2=ent, 3=otherent, 4=vector(empty)
+}
+
+void CBotManager_OnEvent_Vector(IReGameHook_CBotManager_OnEvent *chain, GameEventType event, CBaseEntity *pEntity, Vector *pOther)
+{
+	Vector pOtherCopy(*pOther);
+	auto original = [chain, &pOtherCopy](GameEventType _event, int _pEntity, int _pOther, cell _pOtherVec)
+	{
+		chain->callNext(_event, getPrivate<CBaseEntity>(_pEntity), (CBaseEntity *)&pOtherCopy);
+	};
+	
+	callVoidForward(RG_CBotManager_OnEvent, original, event, indexOfPDataAmx(pEntity), AMX_NULLENT, getAmxVector(pOtherCopy)); // 1=event, 2=ent, 3=otherent(-1), 4=vector
+}
+
+void CBotManager_OnEvent(IReGameHook_CBotManager_OnEvent *chain, GameEventType event, CBaseEntity *pEntity, CBaseEntity *pOther)
+{
+	if (event == EVENT_BULLET_IMPACT || 
+		event == EVENT_FLASHBANG_GRENADE_EXPLODED)
+	{
+		CBotManager_OnEvent_Vector(chain, event, pEntity, (Vector *)pOther);
+		return;
+	}
+	
+	CBotManager_OnEvent_Default(chain, event, pEntity, pOther);
 }
 
 void CBasePlayer_CheckTimeBasedDamage(IReGameHook_CBasePlayer_CheckTimeBasedDamage *chain, CBasePlayer *pthis)
